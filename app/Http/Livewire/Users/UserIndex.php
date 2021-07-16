@@ -5,9 +5,12 @@ namespace App\Http\Livewire\Users;
 use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Livewire\WithPagination;
 
 class UserIndex extends Component
 {
+    use WithPagination;
+
     public $search = "";
     public $username, $firstName, $lastName, $email, $password;
     public $userId;
@@ -33,7 +36,7 @@ class UserIndex extends Component
         ]);  
         
         $this->reset();
-        $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('modal',['modalId' => '#userModal', 'actionModal' => 'hide'] );
 
         session()->flash('user-message', 'User created succesfully');
 
@@ -54,7 +57,7 @@ class UserIndex extends Component
         $this->editMode = true;
         $this->userId = $id;
         $this->loadUser();
-        $this->dispatchBrowserEvent('showModal');
+        $this->dispatchBrowserEvent('modal',['modalId' => '#userModal', 'actionModal' => 'show'] );
 
 
     }
@@ -80,17 +83,22 @@ class UserIndex extends Component
         $user =User::find($this->userId);
         $user->update($validated);
         $this->reset();
-        $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('modal',['modalId' => '#userModal', 'actionModal' => 'hide'] );
 
         session()->flash('user-message', 'User updated succesfully');
 
+    }
 
+    public function showUserModal()
+    {
+        $this->reset();
+        $this->dispatchBrowserEvent('modal',['modalId' => '#userModal', 'actionModal' => 'show'] );
 
     }
 
     public function closeModal()
     {
-        $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('modal',['modalId' => '#userModal', 'actionModal' => 'hide'] );
         $this->reset();
     }
 
